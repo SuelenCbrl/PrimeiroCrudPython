@@ -172,7 +172,6 @@ if __name__=='__main__':
     # db.select_client()
     # db.select_client_by_id(2)
     # db.update_client(2)
-    # db.update_client(5)
     # db.insert_produto()
     # db.select_produto()
     # db.select_produto_by_id(1)
