@@ -13,17 +13,18 @@ class Database():
             print("Conectado com sucesso!",db_info)
         else:
             print("Error")
-    def insert_client(self):
+    def insert_client(self,tupla):
         self.connect()
         try:
-            args=("João ","598","meulogin03","1234562","67999122","CG")
-
-            self.cursor.execute('INSERT INTO cliente(nome,cpf,login,senha,fone,cidade) VALUES (%s,%s,%s,%s,%s,%s)',args)
+            self.cursor.execute('INSERT INTO cliente(nome,cpf,login,senha,fone,cidade) VALUES (%s,%s,%s,%s,%s,%s)',tupla)
             self.conn.commit()
             print("Cliente cadastrado com sucesso!")
 
         except Exception as err:
             print(err)
+        
+        finally:
+            self.close_connection()
 
 
     def select_client(self):
@@ -31,11 +32,13 @@ class Database():
         try:
             self.cursor.execute("SELECT * FROM cliente")
             clientes = self.cursor.fetchall()
-            for item in clientes:
-                print(item)
+            return clientes
 
         except Exception as err:
             print(err)
+
+        finally:
+            self.close_connection()
 
     def select_client_by_id(self,id):
         self.connect()
@@ -47,43 +50,42 @@ class Database():
         except Exception as err:
             print(err)
 
-    def update_client(self,id):
+        finally:
+            self.close_connection()
+
+    def update_client(self,dados_atu):
         self.connect()
         try:
-            cliente = list(self.select_client_by_id(id))
-            cliente[1]=input("Digite o novo nome:")
-            cliente[2]=input("Digite o cpf: ")
-            cliente[3]=input("Digite o login: ")
-            cliente[4]= input("Digite o senha: ")
-            cliente[5]= input("Digite o fone: ")
-            cliente[6]=input("Digite o cidade: ")
-
             self.cursor.execute(f"""UPDATE cliente SET 
-                                nome = '{cliente[1]}',
-                                cpf ='{cliente[2]}',
-                                login = '{cliente[3]}',
-                                senha='{cliente[4]}',
-                                fone='{cliente[5]}',
-                                cidade='{cliente[6]}' 
-                                WHERE id = {cliente[0]}""")
+                                nome = '{dados_atu[1]}',
+                                cpf ='{dados_atu[2]}',
+                                login = '{dados_atu[3]}',
+                                senha='{dados_atu[4]}',
+                                fone='{dados_atu[5]}',
+                                cidade='{dados_atu[6]}' 
+                                WHERE id = {dados_atu[0]}""")
             self.conn.commit()
-            cli_atualizado = self.select_client_by_id(cliente[0])
-            print(cli_atualizado,"Cliente atualizado com sucesso!")
+            return True
     
    
         except Exception as err:
             print(err)
 
+        finally:
+            self.close_connection()
 
     def delete_client(self,id):
         self.connect()
         try:
             self.cursor.execute(f"DELETE FROM cliente  WHERE id ={id}")
             self.conn.commit()
-            print("Cliente Deletado com sucesso!")
+            return True
         
         except Exception as err:
             print(err)
+
+        finally:
+            self.close_connection()
 
     def insert_produto(self):
         self.connect()
@@ -97,6 +99,9 @@ class Database():
         except Exception as err:
             print(err)
 
+        finally:
+            self.close_connection()
+
 
     def select_produto(self):
         self.connect()
@@ -108,6 +113,9 @@ class Database():
 
         except Exception as err:
             print(err)
+        
+        finally:
+            self.close_connection()
 
     def select_produto_by_id(self,id_prod):
         self.connect()
@@ -118,6 +126,9 @@ class Database():
 
         except Exception as err:
             print(err)
+
+        finally:
+            self.close_connection()
 
     def update_produto(self,id_prod):
         self.connect()
@@ -149,6 +160,9 @@ class Database():
    
         except Exception as err:
             print(err)
+        
+        finally:
+            self.close_connection()
 
 
     def delete_produto(self,id_prod):
@@ -160,6 +174,9 @@ class Database():
         
         except Exception as err:
             print(err)
+
+        finally:
+            self.close_connection()
     def close_connection(self):
         if self.conn.is_connected():
             self.cursor.close()
